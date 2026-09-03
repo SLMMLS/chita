@@ -1,0 +1,44 @@
+name: Android CI
+
+on:
+  # Запускать сборку при пуше в основные ветки и при создании Pull Request
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  # Позволяет запустить сборку вручную из вкладки Actions
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Получение кода из репозитория
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Установка Java 17 (требуется для современных версий Android Gradle Plugin)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle # Автоматическое кэширование зависимостей Gradle
+
+      # 3. Выдача прав на выполнение для gradlew (на случай, если они сбросились в git)
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 4. Очистка и сборка Debug APK
+      - name: Build Debug APK
+        run: ./gradlew clean assembleDebug
+
+      # 5. Загрузка готового APK в артефакты GitHub
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: myBooksV0.1-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 7 # Хранить артефакт 7 дней
