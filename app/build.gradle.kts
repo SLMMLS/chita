@@ -85,4 +85,8 @@ dependencies {
 
     // SAF (Storage Access Framework)
     implementation("androidx.documentfile:documentfile:1.0.1")
+
+        // Библиотеки для парсинга форматов книг
+    implementation("org.jsoup:jsoup:1.17.2")
+    implementation("org.commonmark:commonmark:0.22.0")
 }
