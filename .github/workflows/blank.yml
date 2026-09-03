@@ -28,8 +28,11 @@ jobs:
           cache: gradle # Автоматическое кэширование зависимостей Gradle
 
       # 3. Выдача прав на выполнение для gradlew (на случай, если они сбросились в git)
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+            # 3. Исправление окончаний строк (Windows -> Linux) и выдача прав
+      - name: Fix line endings and grant permissions
+        run: |
+          sed -i 's/\r$//' gradlew
+          chmod +x gradlew
 
       # 4. Очистка и сборка Debug APK
       - name: Build Debug APK
