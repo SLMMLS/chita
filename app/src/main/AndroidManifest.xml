@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+    Важно:
+    Разрешение INTERNET запрещено по ТЗ.
+    Не добавлять его ни при каких условиях.
+    -->
+
+    <!-- Разрешения, которые уже нужны или понадобятся на ближайших этапах -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+    <!--
+    Если позже будем проверять наличие TTS-движков, можно добавить queries.
+    Для текущего этапа это не обязательно.
+    -->
+    <!--
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+    -->
+
+    <application
+        android:name=".LectorApplication"
+        android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Lector"
+        tools:targetApi="35">
+
+        <!--
+        Если позже добавите иконки через Image Asset,
+        замените:
+        android:icon="@android:drawable/sym_def_app_icon"
+        на:
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Lector">
+
+            <!-- Обычный запуск приложения -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!--
+            Поддержка меню "Поделиться".
+            Приложение может принимать один файл указанных типов.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="application/pdf" />
+                <data android:mimeType="application/epub+zip" />
+                <data android:mimeType="application/x-fictionbook" />
+                <data android:mimeType="application/x-fictionbook+xml" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="text/markdown" />
+                <data android:mimeType="text/html" />
+            </intent-filter>
+
+            <!--
+            Поддержка отправки нескольких файлов.
+            Здесь оставлен широкий тип, чтобы приложение могло принимать
+            множественный выбор из разных файловых менеджеров.
+            Позже можно сузить, если это понадобится.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+        </activity>
+
+        <!--
+        Сервис для TTS будет добавлен на этапе аудиорежима,
+        когда появится файл:
+
+        app/src/main/java/com/lector/app/feature/tts/TtsPlaybackService.kt
+
+        Пока класса нет, сервис лучше не объявлять.
+        -->
+        <!--
+        <service
+            android:name=".feature.tts.TtsPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+        -->
+
+    </application>
+
+</manifest>
